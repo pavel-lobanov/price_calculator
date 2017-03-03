@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Calculator demo</title>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	    <meta name="description" content="Demo project">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+		<style type="text/css">
+			form label {
+				display: block;
+			}
+			form label:nth-child(4) {
+				display: inline-block;
+			}
+			#final_price {
+				line-height: 2.2em;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-sm-offset-4 col-md-6 col-md-offset-4">
+					<div id="calc">
+						<h2>Калькулятор стоимость выезда</h2>
+						<form name="price_calculator">
+							<label for="service">Вид работы:
+								<select name="service" id="service">
+									<option value="repair">Ремонт колеса</option>
+									<option value="tire_change">Переобувка</option>
+									<option value="tire_change" disabled>Перекидка на дисках</option>
+									<option value="stepney" disabled>Поставить запаску</option>
+								</select>
+							</label>
+							<label for="car_type">Тип авто:
+								<select name="car_type" id="car_type">
+									<option value="light">Легковой</option>
+									<option value="suv_van">Внедорожник, микроавтобус</option>
+								</select>
+							</label>
+							<label for="tyre_count">Кол-во колес:
+								<select name="tyre_count" id="tyre_count">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4" selected>4</option>
+								</select>
+							</label>
+							<label for="tyre_size">Размер колеса:
+								<select name="tyre-size" id="tyre_size">
+									<option value="r13">R13</option>
+									<option value="r14">R14</option>
+									<option value="r15">R15</option>
+									<option value="r16" selected>R16</option>
+									<option value="r17">R17</option>
+									<option value="r18">R18</option>
+									<option value="r19">R19</option>
+									<option value="r20">R20</option>
+									<option value="r21">R21</option>
+								</select>
+							</label>
+							<label for="time_departure">Выезд:
+								<select name="time_departure" id="time_departure">
+									<option value="day">Дневной (8.00 - 22.00)</option>
+									<option value="night">Ночной (22.00 - 8.00)</option>
+								</select>
+							</label>
+							<label for="run_flat">Шины RUN FLAT
+								<input type="checkbox" name="run_flat" id="run_flat">					
+							</label>
+							<button type="button" id="calculate_button">Посчитать</button>
+							<span id="final_price"></span>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="calc.js"></script>
+</html>

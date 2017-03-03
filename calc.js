@@ -2,7 +2,7 @@ const _NORMAL_RATIO        = 1;
 const _SUV_RATIO           = 1.2;
 const _RUN_FLAT_RATIO      = 1.5;
 const _KM_OUT_MKAD         = 1.5;
-const _NORMAL_DEPARTURE    = 20;
+const _NORMAL_DEPARTURE    = 18;
 const _NIGHT_DEPARTURE     = 25;
 const _VALVE_INSTALATION   = 1.5;
 const _FLUFF_BEAD_SEALANT  = 2;
@@ -35,16 +35,18 @@ const _PATCH_PRICE_AND_DESCRIPTION = [
 let form = document.forms.price_calculator;
 
 function setListeners () {
-	var serviceSelect = document.getElementById('service');
+	var serviceSelect      = document.getElementById('service');
 	serviceSelect.onchange = checkTypeOfService;
-	var calcButton = document.getElementById('calculate_button');
-	calcButton.onclick = calculatePrice;
+	var calcButton         = document.getElementById('calculate_button');
+	calcButton.onclick     = calculatePrice;
+	form.onchange          = clearFinalPrice;
 }
 
 function checkTypeOfService () {
 	let serviceField = document.getElementById('service');
 	let serviceType = serviceField.value;
 	let repairSelect = document.getElementById('damage_type');
+	let tyreCount = document.getElementById('tyre_count');
 	switch (serviceType) {
 		case 'repair': //если выбрано "Ремонт"
 			if (!repairSelect) { //если поле не создано, то создаем его
@@ -62,14 +64,21 @@ function checkTypeOfService () {
 				select.id = 'damage_type';
 				label.appendChild(select);
 				form.insertBefore(label, form.children[2]); //вставляем поле перед размером колеса
+				tyreCount.parentNode.classList.toggle('hide');
 			} 
 			break;
 		default:
 			if (repairSelect) {
 				form.removeChild(repairSelect.parentNode);
+				tyreCount.parentNode.classList.toggle('hide');
 			}
 			break;
 	}
+}
+
+function clearFinalPrice () {
+	let totalPrice = document.getElementById('final_price');
+	totalPrice.textContent = '';
 }
 
 function checkForm () {
@@ -83,21 +92,27 @@ function checkForm () {
 function calculatePrice () {
 	let repairSelect    = document.getElementById('damage_type');
 	let finalPriceField = document.getElementById('final_price');
-	let carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure,
-	patchPrice = 0, 
-	runFlat = 0;
+	let carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure;
 
-	carPriceRatio = form.elements['car_type'].value == 'light'?_NORMAL_RATIO:_SUV_RATIO;
-	wheelPrice    = _ONE_WHEEL_SET_PRICE[form.elements['tyre_size'].value];
-	departure     = form.elements['time_departure'].value == 'day'?_NORMAL_DEPARTURE:_NIGHT_DEPARTURE;
-	wheelsCount   = form.elements['tyre_count'].value;
-	if (repairSelect) {
-		patchPrice = _PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price;
+	carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
+	if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;
+	wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ];
+	departure     = form.elements['time_departure'].value == 'day' ? _NORMAL_DEPARTURE : _NIGHT_DEPARTURE;
+	wheelsCount   = parseInt( form.elements['tyre_count'].value );
+	patchPrice    = (repairSelect) ? 
+	_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
+	//Расчет цены
+	finalPrice    = ( (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice ).toString().split('.');
+	//Добавляем нули в копейки
+	if (finalPrice[1] && finalPrice[1].length < 2) { 
+		finalPrice[1] += '0';
+	} else {
+		finalPrice[1] = '00';
 	}
-	
-	finalPrice = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice;
-	finalPriceField.textContent = "Итого: " + finalPrice + " руб";
+	finalPriceField.innerHTML = "<strong>Итого</strong>: от " + finalPrice[0] + " руб. " + finalPrice[1] +
+		" коп. *" +"</br> *точную стоимость ремонта может уточнить только мастер по прибытию";
 }
 
 setListeners();
+checkTypeOfService ();
  
