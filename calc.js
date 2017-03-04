@@ -101,6 +101,7 @@ function calculatePrice () {
 	wheelsCount   = parseInt( form.elements['tyre_count'].value );
 	patchPrice    = (repairSelect) ? 
 	_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
+	if (repairSelect) wheelsCount = 1;
 	//Расчет цены
 	finalPrice    = ( (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice ).toString().split('.');
 	//Добавляем нули в копейки
