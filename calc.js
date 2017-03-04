@@ -29,6 +29,8 @@ const _PATCH_PRICE_AND_DESCRIPTION = [
 {name: 'R-20', price: 20, description: "Повреждение шины  7-10мм"},
 {name: 'Грибок G-7', price: 12, description: "Повреждение шины круглым придметом"},
 {name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"},
+{name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"},
+{name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"}
 ]
 
 
@@ -92,18 +94,19 @@ function checkForm () {
 function calculatePrice () {
 	let repairSelect    = document.getElementById('damage_type');
 	let finalPriceField = document.getElementById('final_price');
-	let carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure;
+	let carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm;
 
 	carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
 	if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;
 	wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ];
 	departure     = form.elements['time_departure'].value == 'day' ? _NORMAL_DEPARTURE : _NIGHT_DEPARTURE;
 	wheelsCount   = parseInt( form.elements['tyre_count'].value );
+	outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
 	patchPrice    = (repairSelect) ? 
 	_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
 	if (repairSelect) wheelsCount = 1;
 	//Расчет цены
-	finalPrice    = ( (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice ).toString().split('.');
+	finalPrice    = ( (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm).toString().split('.');
 	//Добавляем нули в копейки
 	if (finalPrice[1] && finalPrice[1].length < 2) { 
 		finalPrice[1] += '0';
