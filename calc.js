@@ -82,7 +82,8 @@ function checkTypeOfService () {
 
 function clearFinalPrice () {
 	let totalPrice = document.getElementById('final_price');
-	totalPrice.textContent = '';
+	totalPrice.style.opacity = 0;
+	totalPrice.ontransitionend = function () {totalPrice.textContent = ''};
 }
 
 function calculatePrice () {
@@ -108,8 +109,8 @@ function calculatePrice () {
 		finalPrice[1] = '00';
 	}
 	finalPriceField.innerHTML = "<strong>Итого</strong>: от <strong>" + finalPrice[0] + 
-	"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп. *" + 
-	"</br> *точную стоимость ремонта может уточнить только мастер по прибытию";
+	"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп.";
+	finalPriceField.style.opacity = 1;
 }
 
 setListeners();

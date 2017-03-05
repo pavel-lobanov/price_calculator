@@ -14,9 +14,6 @@
 			form label:nth-child(4) {
 				display: inline-block;
 			}
-			#final_price {
-				line-height: 2.2em;
-			}
 			#calc form {
 				border: 1px solid #B3B3B3;
 				border-radius: 0 0 5px 5px;
@@ -45,7 +42,8 @@
 				text-shadow: 1px 1px 3px rgba(51, 51, 51, 0.55); 
 			}
 			#calc select[name="damage_type"] {
-				width: 100vmin;
+				width: 100%;
+    			max-width: 339px;
 			}
 			#calc input[name="out_MKAD_km"] {
 				border-radius: 3px;
@@ -78,7 +76,8 @@
 				display: none;
 			}
 			#calc span {
-				font-size: 1.15em;
+				font-size: 1.2em;
+				top: 3px;
 			}
 			#calc input[name="run_flat"]:checked+span{
 				color: yellow;
@@ -88,7 +87,13 @@
 				margin-bottom: 10px;
 			}
 			#final_price {
+				opacity: 0;
+				transition: opacity 0.3s ease-out;
+				line-height: 2.2em;
 				color: #555;
+			}
+			.price-notice {
+				margin-top: 10px;
 			}
 		</style>
 	</head>
@@ -151,6 +156,9 @@
 							</div>
 							<button type="button" id="calculate_button" class="btn btn-info center">Посчитать</button>
 							<span id="final_price"></span>
+							<div class="price-notice">
+								<span><strong>Примечание</strong>: точную стоимость ремонта может уточнить только мастер по прибытию на вызов</span>
+							</div>
 						</form>
 					</div>
 				</div>
