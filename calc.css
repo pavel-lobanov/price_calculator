@@ -1,0 +1,88 @@
+#calc form label {
+	display: block;
+}
+#calc form label:nth-child(4) {
+	display: inline-block;
+}
+#calc form {
+	border: 1px solid #B3B3B3;
+	border-radius: 0 0 5px 5px;
+	padding: 10px;
+	margin: 3px;
+	box-shadow: 0px 0px 2px 1px rgba(157, 157, 157, 0.3);
+	border-top: 0;
+	margin: 0;
+	background-color: #F6F6F6;
+	color: gray;
+}
+#calc>h2 {
+	text-align: center;
+	background-color: #EA2F2F;
+	min-height: 60px;
+	border-radius: 5px 5px 0 0;
+	color: #FFF;
+	margin: 0;
+	border-bottom: 0;
+	padding-top: 12px;
+	text-shadow: 1px 1px 3px rgba(51, 51, 51, 0.55); 
+}
+#calc .form-control {
+	width: auto;
+	display: inline-block;
+}
+#calc select[name="damage_type"] {
+	width: 100%;
+	max-width: 442px;
+}
+#calc input[name="out_MKAD_km"] {
+	border-radius: 3px;
+	outline: none;
+	padding: 5px;
+	border: 1px solid #CCCCCC;
+	margin-right: 2px;
+	color: #555555;
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+	max-width: 50px;
+	height: 30px;
+}
+#calc .runflat-button {
+	border: 1px solid #CCCCCC;
+	padding: 5px;
+	width: 142px;
+	border-radius: 3px;
+	background-color: #E2E2E2;
+	color: dimgrey;
+	margin-bottom: 10px;
+	box-shadow: 0.5px 0.5px 1px 0px #f2dede;
+}
+#calc .runflat-button:hover {
+	border: 1px solid #DBDBDB;
+	background-color: #ddd;
+	box-shadow: inset 0.5px 0.5px 1px 0px rgba(176, 176, 176, 0.55);
+}
+#calc .runflat-button>label {
+	margin: 0;
+}
+#calc input[name="run_flat"] {
+	display: none;
+}
+#calc span {
+	font-size: 1.2em;
+	top: 3px;
+}
+#calc input[name="run_flat"]:checked+span{
+	color: yellow;
+	text-shadow: 0 0 .5px #777;
+	}
+#calc label {
+	margin-bottom: 10px;
+}
+#calc #final_price {
+	opacity: 0;
+	transition: opacity 0.3s ease-out;
+	line-height: 2.2em;
+	color: #555;
+}
+#calc .price-notice {
+	margin-top: 10px;
+}
