@@ -17,31 +17,104 @@
 			#final_price {
 				line-height: 2.2em;
 			}
+			#calc form {
+				border: 1px solid #B3B3B3;
+				border-radius: 0 0 5px 5px;
+				padding: 10px;
+				margin: 3px;
+				box-shadow: 0px 0px 2px 1px rgba(157, 157, 157, 0.3);
+				border-top: 0;
+				margin: 0;
+				background-color: #F6F6F6;
+				color: gray;
+			}
+			#calc .form-control {
+				width: auto;
+				display: inline-block;
+			}
+
+			#calc>h2 {
+				text-align: center;
+				background-color: #EA2F2F;
+				min-height: 60px;
+				border-radius: 5px 5px 0 0;
+				color: #FFF;
+				margin-bottom: 0;
+				border-bottom: 0;
+				padding-top: 12px;
+				text-shadow: 1px 1px 3px rgba(51, 51, 51, 0.55); 
+			}
+			#calc select[name="damage_type"] {
+				width: 100vmin;
+			}
+			#calc input[name="out_MKAD_km"] {
+				border-radius: 3px;
+				outline: none;
+				padding: 5px;
+				border: 1px solid #CCCCCC;
+				margin-right: 2px;
+				color: #555555;
+				box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+			}
+			#calc .runflat-button {
+				border: 1px solid #CCCCCC;
+				padding: 5px;
+				width: 142px;
+				border-radius: 3px;
+				background-color: #E2E2E2;
+				color: dimgrey;
+				margin-bottom: 10px;
+				box-shadow: 0.5px 0.5px 1px 0px #f2dede;
+			}
+			#calc .runflat-button:hover {
+				border: 1px solid #DBDBDB;
+				background-color: #ddd;
+				box-shadow: inset 0.5px 0.5px 1px 0px rgba(176, 176, 176, 0.55);
+			}
+			#calc .runflat-button>label {
+				margin: 0;
+			}
+			#calc input[name="run_flat"] {
+				display: none;
+			}
+			#calc span {
+				font-size: 1.15em;
+			}
+			#calc input[name="run_flat"]:checked+span{
+				color: yellow;
+				text-shadow: 0 0 .5px #777;
+  			}
+			#calc label {
+				margin-bottom: 10px;
+			}
+			#final_price {
+				color: #555;
+			}
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-6 col-sm-offset-4 col-md-6 col-md-offset-4">
+				<div class="col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3">
 					<div id="calc">
-						<h2>Калькулятор стоимость выезда</h2>
+						<h2>Калькулятор стоимости выезда</h2>
 						<form name="price_calculator">
 							<label for="service">Вид работы:
-								<select name="service" id="service">
+								<select name="service" id="service" class="form-control">
 									<option value="repair">Ремонт колеса</option>
 									<option value="tire_change">Переобувка</option>
-									<option value="tire_change" disabled>Перекидка на дисках</option>
+									<option value="tire_change_on_wheels" disabled>Перекидка на дисках</option>
 									<option value="stepney" disabled>Поставить запаску</option>
 								</select>
 							</label>
 							<label for="car_type">Тип авто:
-								<select name="car_type" id="car_type">
+								<select name="car_type" id="car_type" class="form-control">
 									<option value="light">Легковой</option>
 									<option value="suv_van">Внедорожник, микроавтобус</option>
 								</select>
 							</label>
 							<label for="tyre_count">Кол-во колес:
-								<select name="tyre_count" id="tyre_count">
+								<select name="tyre_count" id="tyre_count" class="form-control">
 									<option value="1">1</option>
 									<option value="2">2</option>
 									<option value="3">3</option>
@@ -49,7 +122,7 @@
 								</select>
 							</label>
 							<label for="tyre_size">Размер колеса:
-								<select name="tyre-size" id="tyre_size">
+								<select name="tyre_size" id="tyre_size" class="form-control">
 									<option value="r13">R13</option>
 									<option value="r14">R14</option>
 									<option value="r15">R15</option>
@@ -62,18 +135,21 @@
 								</select>
 							</label>
 							<label for="time_departure">Выезд:
-								<select name="time_departure" id="time_departure">
+								<select name="time_departure" id="time_departure" class="form-control">
 									<option value="day">Дневной (8.00 - 22.00)</option>
 									<option value="night">Ночной (22.00 - 8.00)</option>
 								</select>
 							</label>
-							<label for="out_MKAD_km">Выезд за МКАД:
+							<label for="out_MKAD_km">Расстояние от МКАД:
 								<input type="number" min="0" max="200" value="0" name="out_MKAD_km">км
 								</label>
-							<label for="run_flat">Шины RUN FLAT
-								<input type="checkbox" name="run_flat" id="run_flat">					
-							</label>
-							<button type="button" id="calculate_button">Посчитать</button>
+							<div >
+								<label for="run_flat" class="runflat-button">У меня Run Flat
+									<input type="checkbox" name="run_flat" id="run_flat">
+									<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+								</label>
+							</div>
+							<button type="button" id="calculate_button" class="btn btn-info center">Посчитать</button>
 							<span id="final_price"></span>
 						</form>
 					</div>

@@ -29,8 +29,8 @@ const _PATCH_PRICE_AND_DESCRIPTION = [
 {name: 'R-20', price: 20, description: "Повреждение шины  7-10мм"},
 {name: 'Грибок G-7', price: 12, description: "Повреждение шины круглым придметом"},
 {name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"},
-{name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"},
-{name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"}
+{name: 'Замена вентиля', price: 1.5, description: "Пропускает воздух через вентиль"},
+{name: 'Герметик', price: 2, description: "Пропускает воздух через диск"}
 ]
 
 
@@ -61,9 +61,11 @@ function checkTypeOfService () {
 					option.value = i;
 					select.appendChild(option);
 				}
-				label.textContent = "Укажите тип повреждения:";
+				label.textContent = "Укажите тип повреждения: ";
 				label.for = 'damage_type';
 				select.id = 'damage_type';
+				select.name = 'damage_type';
+				select.className = "form-control";
 				label.appendChild(select);
 				form.insertBefore(label, form.children[2]); //вставляем поле перед размером колеса
 				tyreCount.parentNode.classList.toggle('hide');
@@ -81,14 +83,6 @@ function checkTypeOfService () {
 function clearFinalPrice () {
 	let totalPrice = document.getElementById('final_price');
 	totalPrice.textContent = '';
-}
-
-function checkForm () {
-	for (var i = 1; i < form.elements.length; i++) {
-		if (form.elements[i].tagName === 'SELECT') {
-			console.log(form.elements[i].value);
-		}
-	}
 }
 
 function calculatePrice () {
@@ -113,8 +107,9 @@ function calculatePrice () {
 	} else {
 		finalPrice[1] = '00';
 	}
-	finalPriceField.innerHTML = "<strong>Итого</strong>: от " + finalPrice[0] + " руб. " + finalPrice[1] +
-		" коп. *" +"</br> *точную стоимость ремонта может уточнить только мастер по прибытию";
+	finalPriceField.innerHTML = "<strong>Итого</strong>: от <strong>" + finalPrice[0] + 
+	"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп. *" + 
+	"</br> *точную стоимость ремонта может уточнить только мастер по прибытию";
 }
 
 setListeners();
