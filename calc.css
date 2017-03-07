@@ -46,6 +46,7 @@
 	height: 30px;
 }
 #calc .runflat-button {
+	text-align: center;
 	border: 1px solid #CCCCCC;
 	padding: 5px;
 	width: 142px;
@@ -70,10 +71,10 @@
 	font-size: 1.2em;
 	top: 3px;
 }
-#calc input[name="run_flat"]:checked+span{
+#calc input[name="run_flat"]:checked+span {
 	color: yellow;
 	text-shadow: 0 0 .5px #777;
-	}
+}
 #calc label {
 	margin-bottom: 10px;
 }
@@ -85,4 +86,12 @@
 }
 #calc .price-notice {
 	margin-top: 10px;
+}
+@media all and (max-width: 600px) {
+	#calc .runflat-button {
+		width: 152px;
+	}
+	#calc input[name="out_MKAD_km"] {
+		padding: 0;
+	}
 }
