@@ -35,7 +35,7 @@
 	]
 
 
-	let form = document.forms.price_calculator;
+	var form = document.forms.price_calculator;
 	//устанавливает события на форму
 	function setListeners () {
 		var serviceSelect      = document.getElementById('service');
@@ -46,17 +46,17 @@
 	}
 	//Строит список из выбранного вида услуги
 	function checkTypeOfService () {
-		let serviceField = document.getElementById('service');
-		let serviceType = serviceField.value;
-		let repairSelect = document.getElementById('damage_type');
-		let tyreCount = document.getElementById('tyre_count');
+		var serviceField = document.getElementById('service');
+		var serviceType = serviceField.value;
+		var repairSelect = document.getElementById('damage_type');
+		var tyreCount = document.getElementById('tyre_count');
 		switch (serviceType) {
 			case 'repair': //если выбрано "Ремонт"
 				if (!repairSelect) { //если поле не создано, то создаем его
-					let label = document.createElement('label');
-					let select = document.createElement('select');
+					var label = document.createElement('label');
+					var select = document.createElement('select');
 					for (var i = 0; i < _PATCH_PRICE_AND_DESCRIPTION.length; i++) {
-						let option = document.createElement('option');
+						var option = document.createElement('option');
 						option.textContent = _PATCH_PRICE_AND_DESCRIPTION[i].description + 
 						' (' + _PATCH_PRICE_AND_DESCRIPTION[i].name  + ')';
 						option.value = i;
@@ -82,15 +82,15 @@
 	}
 	//Чистим поле с ценой, каждый раз, когда изменяется поле формы
 	function clearFinalPrice () {
-		let totalPrice = document.getElementById('final_price');
+		var totalPrice = document.getElementById('final_price');
 		totalPrice.style.opacity = 0;
 		totalPrice.ontransitionend = function () {totalPrice.textContent = ''};
 	}
 
 	function calculatePrice () {
-		let repairSelect    = document.getElementById('damage_type');
-		let finalPriceField = document.getElementById('final_price');
-		let carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm;
+		var repairSelect    = document.getElementById('damage_type');
+		var finalPriceField = document.getElementById('final_price');
+		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm;
 		//Собираем значени из полей
 		carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
 		if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;
