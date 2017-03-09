@@ -10,15 +10,15 @@
 	const _TYRE_BAG            = 0.7;
 	const _PRESSURE_CHECK      = 0.2;
 	const _ONE_WHEEL_SET_PRICE = {
-	r13: 8.5,
-	r14: 9,
-	r15: 9.5,
-	r16: 10,
-	r17: 10.5,
-	r18: 11,
-	r19: 11.5,
-	r20: 12,
-	r21: 13
+	r13: {fullPrice : 8.5, onWheel : 4.5},
+	r14: {fullPrice : 9, onWheel : 4.75},
+	r15: {fullPrice : 9.5, onWheel : 4.75},
+	r16: {fullPrice : 10, onWheel : 5.25},
+	r17: {fullPrice : 10.5, onWheel : 5.375},
+	r18: {fullPrice : 11, onWheel : 5.75},
+	r19: {fullPrice : 11.5, onWheel : 6.25},
+	r20: {fullPrice : 12, onWheel : 6.5},
+	r21: {fullPrice : 13, onWheel : 7}
 	};
 	const _PATCH_PRICE_AND_DESCRIPTION = [
 	{name: 'UP-3', price: 6, description: "Повреждение шины шурупом, гвоздем,саморезом и др."},
@@ -35,7 +35,9 @@
 	]
 
 
-	var form = document.forms.price_calculator;
+	var form = document.forms.price_calculator,
+		changeOnWheels = false,
+		changeStepney = false;
 	//устанавливает события на форму
 	function setListeners () {
 		var serviceSelect      = document.getElementById('service');
@@ -63,21 +65,41 @@
 						select.appendChild(option);
 					}
 					label.textContent = "Укажите тип повреждения: ";
-					label.for = 'damage_type';
-					select.id = 'damage_type';
-					select.name = 'damage_type';
-					select.className = "form-control";
+					label.for         = 'damage_type';
+					select.id         = 'damage_type';
+					select.name       = 'damage_type';
+					select.className  = "form-control";
 					label.appendChild(select);
 					form.insertBefore(label, form.children[2]); //вставляем поле перед размером колеса
 					tyreCount.parentNode.classList.toggle('hide');
 				} 
+				break;
+			case 'stepney': 
+				for (var i = 1; i < 5; i++) {
+					form.elements[i].parentNode.classList.add('hide');
+				}
+				changeStepney = true;
 				break;
 			default://иначе строит список для переобувки
 				if (repairSelect) {
 					form.removeChild(repairSelect.parentNode);
 					tyreCount.parentNode.classList.toggle('hide');
 				}
+
+				if (serviceType == 'tire_change_on_wheels') {
+					changeOnWheels = true;
+				} else {
+					changeOnWheels = false;
+				}
+
+				if (changeStepney) {
+					for (var i = 1; i < 5; i++) {
+						form.elements[i].parentNode.classList.remove('hide');
+					}
+					changeStepney = false;
+				}
 				break;
+			
 		}
 	}
 	//Чистим поле с ценой, каждый раз, когда изменяется поле формы
@@ -90,25 +112,42 @@
 	function calculatePrice () {
 		var repairSelect    = document.getElementById('damage_type');
 		var finalPriceField = document.getElementById('final_price');
-		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm;
-		//Собираем значени из полей
-		carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
-		if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;
-		wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ];
-		departure     = form.elements['time_departure'].value == 'day' ? _NORMAL_DEPARTURE : _NIGHT_DEPARTURE;
-		wheelsCount   = parseInt( form.elements['tyre_count'].value );
-		outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
-		patchPrice    = (repairSelect) ? 
-		_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
-		if (repairSelect) wheelsCount = 1;
-		//Расчет цены
-		finalPrice    = ( (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm).toString().split('.');
+		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm, changeType;
+
+		//Собираем значения из полей
+		if (!changeStepney) {
+			carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
+			if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;//если это RunFlat
+			if (changeOnWheels) {
+				changeType = 'onWheel'; //если перекидка, то ставим тип перекидка
+			} else {
+				changeType = 'fullPrice'; //инчаче цена переобувки
+			}
+			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
+			departure     = form.elements['time_departure'].value == 'day' ? _NORMAL_DEPARTURE : _NIGHT_DEPARTURE;
+			wheelsCount   = parseInt( form.elements['tyre_count'].value );
+			outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			patchPrice    = (repairSelect) ? 
+			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
+			if (repairSelect) wheelsCount = 1;
+
+			//Расчет цены
+			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
+		} else {
+			departure  = form.elements['time_departure'].value == 'day' ? 25 : 30;
+			outMkadKm  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			finalPrice = departure + outMkadKm;
+		}
+		
 		//Добавляем нули в копейки
+		finalPrice = finalPrice.toString().split('.');
 		if (finalPrice[1] && finalPrice[1].length < 2) { 
 			finalPrice[1] += '0';
 		} else {
 			finalPrice[1] = '00';
 		}
+
+		//display total price
 		finalPriceField.innerHTML = "<strong>Итого</strong>: от <strong>" + finalPrice[0] + 
 		"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп.";
 		finalPriceField.style.opacity = 1;
