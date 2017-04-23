@@ -123,19 +123,31 @@
 			} else {
 				changeType = 'fullPrice'; //инчаче цена переобувки
 			}
-			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
-			departure     = form.elements['time_departure'].value == 'day' ? _NORMAL_DEPARTURE : _NIGHT_DEPARTURE;
-			wheelsCount   = parseInt( form.elements['tyre_count'].value );
-			outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
-			patchPrice    = (repairSelect) ? 
-			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
-			if (repairSelect) wheelsCount = 1;
 
-			//Расчет цены
+		switch (form.elements['time_departure'].value) {
+			case 'day':
+				departure = _NORMAL_DEPARTURE;
+				break;
+			case 'night':
+				departure = _NIGHT_DEPARTURE;
+				break;
+			default:
+				departure = 0;
+				break;
+		}
+
+		wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
+		wheelsCount   = parseInt( form.elements['tyre_count'].value );
+		outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+		patchPrice    = (repairSelect) ? 
+		_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
+
+		if (repairSelect) wheelsCount = 1;
 			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
 		} else {
 			departure  = form.elements['time_departure'].value == 'day' ? 25 : 30;
 			outMkadKm  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			
 			finalPrice = departure + outMkadKm;
 		}
 		
