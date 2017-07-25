@@ -6,7 +6,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <meta name="description" content="Demo project">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<link rel="stylesheet" href="bootstrap.min.css">
 		<link rel="stylesheet" href="calc.css">
 	</head>
 	<body>
@@ -20,23 +20,14 @@
 								<select name="service" id="service" class="form-control">
 									<option value="repair">Ремонт колеса</option>
 									<option value="tire_change">Переобувка</option>
-									<option value="tire_change_on_wheels">Перекидка на дисках</option>
 									<option value="stepney">Поставить запаску</option>
-								</select>
+								</select>	
 							</label>
 							<label for="car_type">Тип авто:
 								<select name="car_type" id="car_type" class="form-control">
 									<option value="light">Легковой</option>
 									<option value="suv_van">Внедорожник, микроавтобус</option>
-								</select>
-							</label>
-							<label for="tyre_count">Кол-во колес:
-								<select name="tyre_count" id="tyre_count" class="form-control">
-									<option value="1">1</option>
-									<option value="2">2</option>
-									<option value="3">3</option>
-									<option value="4" selected>4</option>
-								</select>
+								</select>	
 							</label>
 							<label for="tyre_size">Размер колеса:
 								<select name="tyre_size" id="tyre_size" class="form-control">
@@ -51,6 +42,19 @@
 									<option value="r21">R21</option>
 								</select>
 							</label>
+							<label for="tyre_count">Кол-во колес:
+								<select name="tyre_count" id="tyre_count" class="form-control">
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4" selected>4</option>
+								</select>
+							</label>	
+							<label for="on-wheels">
+								<input id="on-wheels" type="checkbox">&nbsp;Резина на дисках<br>
+							</label>
+								
+							
 							<label for="time_departure">Выезд:
 								<select name="time_departure" id="time_departure" class="form-control">
 									<option value="day">Дневной (8.00 - 22.00)</option>
@@ -58,14 +62,14 @@
 									<option value="no_departure">Без выезда</option>
 								</select>
 							</label>
+							
 							<label for="out_MKAD_km">Расстояние от МКАД:
-								<input type="number" min="0" max="200"  placeholder="0"name="out_MKAD_km">км
-								</label>
-							<div >
-								<label for="run_flat" class="runflat-button">У меня Run Flat
-									<input type="checkbox" name="run_flat" id="run_flat">
-									<span class="glyphicon glyphicon-star" aria-hidden="true"></span>
-								</label>
+									<input type="number" min="0" max="200"  placeholder="0" id="out_MKAD_km">км
+							</label>
+							<div role="runflat-button-area">
+								<label for="run_flat" class="runflat-button">У меня Run Flat</label>
+								<input type="checkbox" name="run_flat" id="run_flat">
+								<!-- <span class="glyphicon glyphicon-star" aria-hidden="true"></span> -->
 							</div>
 							<button type="button" id="calculate_button" class="btn btn-info center">Посчитать</button>
 							<span id="final_price"></span>

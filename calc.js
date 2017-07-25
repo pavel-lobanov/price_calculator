@@ -2,7 +2,7 @@
 	const _NORMAL_RATIO        = 1;
 	const _SUV_RATIO           = 1.2;
 	const _RUN_FLAT_RATIO      = 1.5;
-	const _KM_OUT_MKAD         = 1.5;
+	const _KM_OUT_MKAD         = 1.4;
 	const _NORMAL_DEPARTURE    = 18;
 	const _NIGHT_DEPARTURE     = 25;
 	const _VALVE_INSTALATION   = 1.5;
@@ -21,23 +21,23 @@
 	r21: {fullPrice : 13, onWheel : 7}
 	};
 	const _PATCH_PRICE_AND_DESCRIPTION = [
-	{name: 'UP-3', price: 6, description: "Повреждение шины шурупом, гвоздем,саморезом и др."},
-	{name: 'UP-4,5', price: 7, description: "Повреждение шины до 2мм"},
-	{name: 'R-10', price: 11, description: "Повреждение шины  2-3мм"},
-	{name: 'R-12', price: 14, description: "Повреждение шины  3-5мм"},
-	{name: 'R-13', price: 13, description: "Повреждение шины  3-5мм"},
-	{name: 'R-15', price: 15, description: "Повреждение шины  5-7мм"},
-	{name: 'R-20', price: 20, description: "Повреждение шины  7-10мм"},
-	{name: 'Грибок G-7', price: 12, description: "Повреждение шины круглым придметом"},
-	{name: 'Грибок G-9', price: 14, description: "Повреждение шины круглым придметом до 2мм"},
+	{name: 'UP-3', price: 6, description: "Повреждение гвоздем,саморезом и др."},
+	{name: 'UP-4,5', price: 7, description: "Повреждение до 2мм"},
+	{name: 'R-10', price: 11, description: "Повреждение 2-3мм"},
+	{name: 'R-12', price: 14, description: "Повреждение 3-5мм"},
+	{name: 'R-13', price: 13, description: "Повреждение 3-5мм"},
+	{name: 'R-15', price: 15, description: "Повреждение 5-7мм"},
+	{name: 'R-20', price: 20, description: "Повреждение 7-10мм"},
+	{name: 'Грибок G-7', price: 12, description: "Повреждение круглым придметом"},
+	{name: 'Грибок G-9', price: 14, description: "Повреждение круглым придметом(до 4мм)"},
 	{name: 'Замена вентиля', price: 1.5, description: "Пропускает воздух через вентиль"},
 	{name: 'Герметик', price: 2, description: "Пропускает воздух через диск"}
-	]
-
-
+	];
 	var form = document.forms.price_calculator,
-		changeOnWheels = false,
-		changeStepney = false;
+		changeTire = false,
+		changeStepney = false,
+		amountOfAdditionalCars = 0;
+
 	//устанавливает события на форму
 	function setListeners () {
 		var serviceSelect      = document.getElementById('service');
@@ -52,6 +52,14 @@
 		var serviceType = serviceField.value;
 		var repairSelect = document.getElementById('damage_type');
 		var tyreCount = document.getElementById('tyre_count');
+		removeCarContainer();
+		removeAddButton();
+		if (changeStepney) {//if list item "stepney" was choosen
+			for (var i = 1; i < 5; i++) {
+				form.elements[i].parentNode.classList.remove('hide');
+			}
+			changeStepney = false;
+		}
 		switch (serviceType) {
 			case 'repair': //если выбрано "Ремонт"
 				if (!repairSelect) { //если поле не создано, то создаем его
@@ -64,14 +72,14 @@
 						option.value = i;
 						select.appendChild(option);
 					}
-					label.textContent = "Укажите тип повреждения: ";
-					label.for         = 'damage_type';
+					label.setAttribute('for', 'damage_type');
+					label.innerHTML   = "Укажите повреждение шины:&nbsp;";
 					select.id         = 'damage_type';
-					select.name       = 'damage_type';
 					select.className  = "form-control";
 					label.appendChild(select);
 					form.insertBefore(label, form.children[2]); //вставляем поле перед размером колеса
 					tyreCount.parentNode.classList.toggle('hide');
+					form.elements['on-wheels'].parentNode.classList.toggle('hide');
 				} 
 				break;
 			case 'stepney': 
@@ -85,28 +93,52 @@
 					form.removeChild(repairSelect.parentNode);
 					tyreCount.parentNode.classList.toggle('hide');
 				}
-
-				if (serviceType == 'tire_change_on_wheels') {
-					changeOnWheels = true;
-				} else {
-					changeOnWheels = false;
-				}
-
-				if (changeStepney) {
-					for (var i = 1; i < 5; i++) {
-						form.elements[i].parentNode.classList.remove('hide');
-					}
-					changeStepney = false;
-				}
+				form.elements['on-wheels'].parentNode.classList.toggle('hide');
+				addButton();
 				break;
 			
 		}
 	}
-	//Чистим поле с ценой, каждый раз, когда изменяется поле формы
-	function clearFinalPrice () {
-		var totalPrice = document.getElementById('final_price');
-		totalPrice.style.opacity = 0;
-		totalPrice.ontransitionend = function () {totalPrice.textContent = ''};
+
+	//adds to form list new car to calculate
+	function addNewCar (arguments) {
+		var carsContainer = document.getElementById('additional-cars');
+		var carDiv = document.createElement('div');
+		for (var i = 1; i < 5; i++) {
+			var cloneNode = form[i].parentNode.cloneNode(true);
+			if (cloneNode.children[0].type === 'checkbox' && cloneNode.children[0].checked) cloneNode.children[0].checked = false;
+			carDiv.appendChild(cloneNode);
+		} 
+		carDiv.dataset.additionalCarNum = ++amountOfAdditionalCars;
+		if( !carsContainer ) {
+			carsContainer = document.createElement('div');
+			carsContainer.id = 'additional-cars';
+			carsContainer.appendChild(carDiv);
+			form.insertBefore(carsContainer, form.elements['add-car-button']);
+		}else {
+			carsContainer.appendChild(carDiv);
+		}
+		
+	}
+
+	//adds and replace 'add' button
+	function addButton (arguments) {
+		var addButton = document.createElement('button');
+		addButton.textContent = 'Добавить еще авто';
+		addButton.id = 'add-car-button';
+		addButton.type = 'button';
+		addButton.addEventListener('click', function(){addNewCar();}, false);
+		form.insertBefore(addButton, form.elements['time_departure'].parentNode);
+	}
+
+	function removeCarContainer (arguments) {
+		var carsContainer = document.getElementById('additional-cars');
+		if (carsContainer) form.removeChild(carsContainer);
+	}
+
+	function removeAddButton (arguments) {
+		var button = document.getElementById('add-car-button');
+		if (button) form.removeChild(button);
 	}
 
 	function calculatePrice () {
@@ -124,25 +156,26 @@
 				changeType = 'fullPrice'; //инчаче цена переобувки
 			}
 
-		switch (form.elements['time_departure'].value) {
-			case 'day':
-				departure = _NORMAL_DEPARTURE;
-				break;
-			case 'night':
-				departure = _NIGHT_DEPARTURE;
-				break;
-			default:
-				departure = 0;
-				break;
+			switch (form.elements['time_departure'].value) {
+				case 'day':
+					departure = _NORMAL_DEPARTURE;
+					break;
+				case 'night':
+					departure = _NIGHT_DEPARTURE;
+					break;
+				default:
+					departure = 0;
+					break;
+			}
+
+			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
+			wheelsCount   = parseInt( form.elements['tyre_count'].value );
+			outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			patchPrice    = (repairSelect) ? 
+			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
 		}
-
-		wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
-		wheelsCount   = parseInt( form.elements['tyre_count'].value );
-		outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
-		patchPrice    = (repairSelect) ? 
-		_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
-
-		if (repairSelect) wheelsCount = 1;
+		if (repairSelect) {
+			wheelsCount = 1;
 			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
 		} else {
 			departure  = form.elements['time_departure'].value == 'day' ? 25 : 30;
@@ -160,12 +193,22 @@
 		}
 
 		//display total price
-		finalPriceField.innerHTML = "<strong>Итого</strong>: от <strong>" + finalPrice[0] + 
+		finalPriceField.innerHTML = "Стоимость работы от <strong>" + finalPrice[0] + 
 		"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп.";
 		finalPriceField.style.opacity = 1;
+		finalPriceField.classList.add('bounceInRight');
+	}
+	//Чистим поле с ценой, каждый раз, когда изменяется поле формы
+	function clearFinalPrice () {
+		var totalPrice = document.getElementById('final_price');
+		totalPrice.style.opacity = 0;
+		totalPrice.classList.remove('bounceInRight');
+		totalPrice.ontransitionend = function () {totalPrice.textContent = ''};
 	}
 
 	setListeners();
 	checkTypeOfService ();
  
+
+
 })();
