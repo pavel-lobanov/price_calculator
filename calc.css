@@ -116,6 +116,10 @@
     outline: none;
 }
 
+#calc .to-hide {
+	display: none !important;
+}
+
 /*media queries*/
 @media all and (max-width: 600px) {
     #calc .runflat-button {
