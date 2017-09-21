@@ -1,7 +1,7 @@
 ;(function(){
 	const _NORMAL_RATIO        = 1;
 	const _SUV_RATIO           = 1.2;
-	const _RUN_FLAT_RATIO      = 1.5;
+	const _RUN_FLAT_RATIO      = 1.2;
 	const _KM_OUT_MKAD         = 1.4;
 	const _NORMAL_DEPARTURE    = 18;
 	const _NIGHT_DEPARTURE     = 25;
@@ -56,7 +56,7 @@
 		removeCarContainer();
 		removeAddButton();
 		if (changeStepney) {//if list item "stepney" was choosen
-			for (var i = 1; i < 5; i++) {
+			for (var i = 1; i < 4; i++) {
 				form.elements[i].parentNode.classList.remove('hide');
 			}
 			changeStepney = false;
@@ -88,9 +88,19 @@
 					tireSizeLabel.classList.toggle('hide');
 				}
 				break;
-			case 'stepney': 
-				for (var i = 1; i < 5; i++) {
+			case 'stepney':
+			if (changeTire) {
+					form.removeChild( document.getElementById('cars-container') );
+					amountOfAdditionalCars = 0;
+					changeTire = false;
+					carTypeLabel.classList.toggle('hide');
+					// tireSizeLabel.classList.toggle('hide');
+				} 
+
+				for (var i = 1; i < 4; i++) {
+					if (form.elements[i].id === 'time_departure') continue;
 					form.elements[i].parentNode.classList.add('hide');
+					console.log(form.elements[i].parentNode)
 				}
 				changeStepney = true;
 				break;
@@ -114,11 +124,13 @@
 			tireSizeLabelClone = tireSizeLabel.cloneNode(true),
 			tireCountField     = document.createElement('select'),
 			tireOnWheelsField  = document.createElement('input'),
+			runFlatField       = document.createElement('input'),
 			labelElement1      = document.createElement('label'),
 			labelElement2      = document.createElement('label'),
+			labelElement3      = document.createElement('label'),
 			h4Element          = document.createElement('h4');
 		carsContainer.id = 'cars-container';
-		h4Element.textContent = 'Auto ' + (++amountOfAdditionalCars);
+		h4Element.textContent = 'Авто №' + (++amountOfAdditionalCars);
 		carTypeLabelClone.className = '';
 		tireSizeLabelClone.className = '';
 		for (var i = 1; i < 5; i++) {
@@ -133,13 +145,17 @@
 		tireCountField.className = 'form-control';
 		labelElement1.innerHTML = "Кол-во колес&nbsp;";
 		labelElement1.appendChild(tireCountField);
-		tireOnWheelsField.id = 'on-wheels';
+		tireOnWheelsField.id = 'on-wheels-check';
 		tireOnWheelsField.type = 'checkbox';
+		runFlatField.id = 'run-flat-check';
+		runFlatField.type = 'checkbox';
 		labelElement2.innerHTML = "Резина на дисках&nbsp;";
 		labelElement2.appendChild(tireOnWheelsField);
+		labelElement3.innerHTML = "Run Flat&nbsp;";
+		labelElement3.appendChild(runFlatField);
 		carDiv.dataset.additionalCarNum = amountOfAdditionalCars;
 		carDiv.className = 'jumbotron';
-		carDiv.append(h4Element,carTypeLabelClone,tireSizeLabelClone,labelElement1,labelElement2);
+		carDiv.append(h4Element,carTypeLabelClone,tireSizeLabelClone,labelElement1,labelElement2,labelElement3);
 		carsContainer.appendChild(carDiv);
 		form.insertBefore(carsContainer, form.elements['time_departure'].parentNode);
 		changeTire = true;
@@ -148,7 +164,7 @@
 	function addNewCar (arguments) {
 		var carsContainer = document.getElementById('cars-container'),
 		    carsDivClone = carsContainer.children[0].cloneNode(true);
-		carsDivClone.children[0].textContent = "Auto: " + (++amountOfAdditionalCars);
+		carsDivClone.children[0].textContent = "Авто №" + (++amountOfAdditionalCars);
 		carsDivClone.children[3].children[0].children[3].selected = true;
 		carsDivClone.children[4].children[0].checked = false;
 		carsDivClone.dataset.additionalCarNum = amountOfAdditionalCars;
