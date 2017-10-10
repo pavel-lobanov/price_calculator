@@ -51,12 +51,14 @@
 	}
 	//Строит список из выбранного вида услуги
 	function renderListOfServices () {
-		var serviceField = document.getElementById('service');
-		var serviceType = serviceField.value;
-		var repairSelect = document.getElementById('damage_type');
+		var serviceField  = document.getElementById('service');
+		var serviceType   = serviceField.value;
+		var repairSelect  = document.getElementById('damage_type');
+		var departureTime = document.getElementById('time_departure');
 		removeCarContainer();
 		removeAddButton();
 		if (changeStepney) {//if list item "stepney" was choosen
+			departureTime.children[2].classList.toggle('hide');
 			for (var i = 1; i < 4; i++) {
 				form.elements[i].parentNode.classList.remove('hide');
 			}
@@ -102,6 +104,7 @@
 					if (form.elements[i].id === 'time_departure') continue;
 					form.elements[i].parentNode.classList.add('hide');
 				}
+				departureTime.children[2].classList.toggle('hide');
 				repairTyre             = false;
 				changeStepney          = true;
 				break;
@@ -200,13 +203,10 @@
 		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm, changeType;
 
 		//Собираем значения из полей
-		if (!changeStepney) {
+		
+		if (repairTyre) {
+			wheelsCount 	= 1;
 			carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
-			if (changeOnWheels) {
-				changeType = 'onWheel'; //если перекидка, то ставим тип перекидка
-			} else {
-				changeType = 'fullPrice'; //инчаче цена переобувки
-			}
 
 			switch (form.elements['time_departure'].value) {
 				case 'day':
@@ -220,16 +220,13 @@
 					break;
 			}
 
-			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
-			wheelsCount   = parseInt( form.elements['tyre_count'].value );
-			outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ]['fullPrice'];
+			outMkadKm	  	= form['out_MKAD_km'].value * _KM_OUT_MKAD;
 			patchPrice    = (repairTyre) ? 
 			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
-		}
-		if (repairTyre) {
-			wheelsCount = 1;
 			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
-		} else {
+		} 
+		if (changeStepney) {
 			departure  = form.elements['time_departure'].value == 'day' ? 25 : 30;
 			outMkadKm  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
 			
