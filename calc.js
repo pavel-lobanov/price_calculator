@@ -119,16 +119,16 @@
 
 	function createChangeTireBlock (arguments) {
 		var carsContainer  	   = document.createElement('div'),
-			carDiv             = document.createElement('div'),
-			carTypeLabelClone  = carTypeLabel.cloneNode(true),
-			tireSizeLabelClone = tireSizeLabel.cloneNode(true),
-			tireCountField     = document.createElement('select'),
-			tireOnWheelsField  = document.createElement('input'),
-			runFlatField       = document.createElement('input'),
-			labelElement1      = document.createElement('label'),
-			labelElement2      = document.createElement('label'),
-			labelElement3      = document.createElement('label'),
-			h4Element          = document.createElement('h4');
+				carDiv             = document.createElement('div'),
+				carTypeLabelClone  = carTypeLabel.cloneNode(true),
+				tireSizeLabelClone = tireSizeLabel.cloneNode(true),
+				tireCountField     = document.createElement('select'),
+				tireOnWheelsField  = document.createElement('input'),
+				runFlatField       = document.createElement('input'),
+				labelElement1      = document.createElement('label'),
+				labelElement2      = document.createElement('label'),
+				labelElement3      = document.createElement('label'),
+				h4Element          = document.createElement('h4');
 		carsContainer.id = 'cars-container';
 		h4Element.textContent = 'Авто №' + (++amountOfAdditionalCars);
 		carTypeLabelClone.className = '';
@@ -167,6 +167,7 @@
 		carsDivClone.children[0].textContent = "Авто №" + (++amountOfAdditionalCars);
 		carsDivClone.children[3].children[0].children[3].selected = true;
 		carsDivClone.children[4].children[0].checked = false;
+		carsDivClone.children[5].children[0].checked = false;
 		carsDivClone.dataset.additionalCarNum = amountOfAdditionalCars;
 		carsContainer.appendChild(carsDivClone);
 		
