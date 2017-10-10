@@ -34,22 +34,23 @@
 	{name: 'Герметик', price: 2, description: "Пропускает воздух через диск"}
 	];
 	var form                   = document.forms.price_calculator,
-		changeTire             = false,
-		changeStepney          = false,
-		amountOfAdditionalCars = 0,
-		carTypeLabel           = document.getElementById('car_type').parentNode,
-		tireSizeLabel          = document.getElementById('tyre_size').parentNode;
+			repairTyre						 = true,
+			changeTire             = false,
+			changeStepney          = false,
+			amountOfAdditionalCars = 0,
+			carTypeLabel           = document.getElementById('car_type').parentNode,
+			tireSizeLabel          = document.getElementById('tyre_size').parentNode;
 
 	//устанавливает события на форму
 	function setListeners () {
 		var serviceSelect      = document.getElementById('service');
-		serviceSelect.onchange = checkTypeOfService;//слушает события вида услуги
+		serviceSelect.onchange = renderListOfServices;//слушает события вида услуги
 		var calcButton         = document.getElementById('calculate_button');
 		calcButton.onclick     = calculatePrice;//слушает кнопку подсчета
 		form.onchange          = clearFinalPrice;//слушает на изменения поля
 	}
 	//Строит список из выбранного вида услуги
-	function checkTypeOfService () {
+	function renderListOfServices () {
 		var serviceField = document.getElementById('service');
 		var serviceType = serviceField.value;
 		var repairSelect = document.getElementById('damage_type');
@@ -87,22 +88,22 @@
 					carTypeLabel.classList.toggle('hide');
 					tireSizeLabel.classList.toggle('hide');
 				}
+				repairTyre = true;
 				break;
 			case 'stepney':
-			if (changeTire) {
-					form.removeChild( document.getElementById('cars-container') );
-					amountOfAdditionalCars = 0;
-					changeTire = false;
-					carTypeLabel.classList.toggle('hide');
-					// tireSizeLabel.classList.toggle('hide');
+				if (changeTire) {
+						form.removeChild( document.getElementById('cars-container') );
+						amountOfAdditionalCars = 0;
+						changeTire             = false;
+						carTypeLabel.classList.toggle('hide');
+						// tireSizeLabel.classList.toggle('hide');
 				} 
-
 				for (var i = 1; i < 4; i++) {
 					if (form.elements[i].id === 'time_departure') continue;
 					form.elements[i].parentNode.classList.add('hide');
-					console.log(form.elements[i].parentNode)
 				}
-				changeStepney = true;
+				repairTyre             = false;
+				changeStepney          = true;
 				break;
 			default://иначе строит список для переобувки
 				if (repairSelect) {
@@ -201,7 +202,6 @@
 		//Собираем значения из полей
 		if (!changeStepney) {
 			carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
-			if ( form.elements['run_flat'].checked ) carPriceRatio = _RUN_FLAT_RATIO;//если это RunFlat
 			if (changeOnWheels) {
 				changeType = 'onWheel'; //если перекидка, то ставим тип перекидка
 			} else {
@@ -223,10 +223,10 @@
 			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ][changeType];
 			wheelsCount   = parseInt( form.elements['tyre_count'].value );
 			outMkadKm	  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
-			patchPrice    = (repairSelect) ? 
+			patchPrice    = (repairTyre) ? 
 			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
 		}
-		if (repairSelect) {
+		if (repairTyre) {
 			wheelsCount = 1;
 			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
 		} else {
@@ -245,8 +245,8 @@
 		}
 
 		//display total price
-		finalPriceField.innerHTML = "Стоимость работы от <strong>" + finalPrice[0] + 
-		"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп.";
+		finalPriceField.innerHTML = "Итого <strong>" + finalPrice[0] + 
+		"</strong> руб. <strong>" + finalPrice[1] + "</strong> коп. *";
 		finalPriceField.style.opacity = 1;
 		finalPriceField.classList.add('bounceInRight');
 	}
@@ -259,7 +259,7 @@
 	}
 
 	setListeners();
-	checkTypeOfService ();
+	renderListOfServices ();
  
 
 
