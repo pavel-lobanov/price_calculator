@@ -120,6 +120,11 @@
 	display: none !important;
 }
 
+.car-number-h4 {
+    color: #19e15f;
+    font-size: 1.7rem;
+}
+
 /*media queries*/
 @media all and (max-width: 600px) {
     #calc .runflat-button {
