@@ -31,10 +31,11 @@
 	{name: 'Грибок G-7', price: 12, description: "Повреждение круглым придметом"},
 	{name: 'Грибок G-9', price: 14, description: "Повреждение круглым придметом(до 4мм)"},
 	{name: 'Замена вентиля', price: 1.5, description: "Пропускает воздух через вентиль"},
-	{name: 'Герметик', price: 2, description: "Пропускает воздух через диск"}
+	{name: 'Герметик', price: 2, description: "Пропускает воздух через диск"},
+	{name: 'Наше колесо', price: 20, description: "Если колесо невозможно восстановить"}
 	];
 	var form                   = document.forms.price_calculator,
-			repairTyre						 = true,
+			repairTire						 = true,
 			changeTire             = false,
 			changeStepney          = false,
 			amountOfAdditionalCars = 0,
@@ -86,11 +87,11 @@
 				if (changeTire) {
 					form.removeChild( document.getElementById('cars-container') );
 					amountOfAdditionalCars = 0;
-					changeTire = false;
+					changeTire             = false;
 					carTypeLabel.classList.toggle('hide');
 					tireSizeLabel.classList.toggle('hide');
 				}
-				repairTyre = true;
+				repairTire = true;
 				break;
 			case 'stepney':
 				if (changeTire) {
@@ -105,8 +106,9 @@
 					form.elements[i].parentNode.classList.add('hide');
 				}
 				departureTime.children[2].classList.toggle('hide');
-				repairTyre             = false;
-				changeStepney          = true;
+				repairTire    = false;
+				changeTire 		= false;
+				changeStepney = true;
 				break;
 			default://иначе строит список для переобувки
 				if (repairSelect) {
@@ -114,6 +116,8 @@
 					carTypeLabel.classList.toggle('hide');
 					tireSizeLabel.classList.toggle('hide');
 				}
+				repairTire    = false;
+				changeTire 		= true;
 				createChangeTireBlock();
 				addButton();
 				break;
@@ -134,6 +138,7 @@
 				labelElement3      = document.createElement('label'),
 				h4Element          = document.createElement('h4');
 		carsContainer.id = 'cars-container';
+		h4Element.className = 'car-number-h4'
 		h4Element.textContent = 'Авто №' + (++amountOfAdditionalCars);
 		carTypeLabelClone.className = '';
 		tireSizeLabelClone.className = '';
@@ -146,6 +151,7 @@
 			option.textContent = i;
 			tireCountField.appendChild(option);
 		}
+		tireCountField.id = 'tyre-count';
 		tireCountField.className = 'form-control';
 		labelElement1.innerHTML = "Кол-во колес&nbsp;";
 		labelElement1.appendChild(tireCountField);
@@ -162,7 +168,6 @@
 		carDiv.append(h4Element,carTypeLabelClone,tireSizeLabelClone,labelElement1,labelElement2,labelElement3);
 		carsContainer.appendChild(carDiv);
 		form.insertBefore(carsContainer, form.elements['time_departure'].parentNode);
-		changeTire = true;
 	}
 	//adds to form list new car to calculate
 	function addNewCar (arguments) {
@@ -183,7 +188,7 @@
 		addButton.textContent = 'Добавить еще авто';
 		addButton.id = 'add-car-button';
 		addButton.type = 'button';
-		addButton.addEventListener('click', function(){addNewCar();}, false);
+		addButton.addEventListener('click', function(){addNewCar(); clearFinalPrice ();}, false);
 		form.insertBefore(addButton, form.elements['time_departure'].parentNode);
 	}
 
@@ -200,11 +205,11 @@
 	function calculatePrice () {
 		var repairSelect    = document.getElementById('damage_type');
 		var finalPriceField = document.getElementById('final_price');
-		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm, changeType;
+		var carPriceRatio, wheelPrice, wheelsCount, finalPrice, departure, outMkadKm, changeType, oneCarCost = 0, tireFullChange = 0;
 
 		//Собираем значения из полей
 		
-		if (repairTyre) {
+		if (repairTire) {
 			wheelsCount 	= 1;
 			carPriceRatio = form.elements['car_type'].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
 
@@ -222,10 +227,43 @@
 
 			wheelPrice    = _ONE_WHEEL_SET_PRICE[ form.elements['tyre_size'].value ]['fullPrice'];
 			outMkadKm	  	= form['out_MKAD_km'].value * _KM_OUT_MKAD;
-			patchPrice    = (repairTyre) ? 
+			patchPrice    = (repairTire) ? 
 			_PATCH_PRICE_AND_DESCRIPTION[ form.elements['damage_type'].value ].price : 0;
 			finalPrice    = (wheelPrice * wheelsCount) * carPriceRatio + departure + patchPrice + outMkadKm;
 		} 
+
+		if (changeTire) {
+			let carsContainer = document.getElementById('cars-container').children;
+			for (var i = 0; i < carsContainer.length; i++) {
+				let additionalCar = carsContainer[i].children;
+				carPriceRatio = additionalCar[1].children[0].value == 'light' ? _NORMAL_RATIO : _SUV_RATIO;
+				changeType = additionalCar[4].children[0].checked == false ? 'fullPrice' : 'onWheel';
+				wheelPrice = _ONE_WHEEL_SET_PRICE[additionalCar[2].children[0].value][changeType];
+				wheelsCount = parseInt(additionalCar[3].children[0].value);
+				if (additionalCar[5].children[0].checked && changeType == 'fullPrice') carPriceRatio += .2;
+				oneCarCost += (wheelPrice * wheelsCount) * carPriceRatio;
+				console.log(oneCarCost)
+				if (changeType == 'fullPrice') tireFullChange += 1;
+			}
+			switch (form.elements['time_departure'].value) {
+				case 'day':
+					departure = _NORMAL_DEPARTURE;
+					break;
+				case 'night':
+					departure = _NIGHT_DEPARTURE;
+					break;
+				default:
+					departure = 0;
+					break;
+			}
+			outMkadKm  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
+			if(tireFullChange >= 3) {
+				departure = 0;
+			}
+			finalPrice = oneCarCost + departure + outMkadKm;
+
+		}
+
 		if (changeStepney) {
 			departure  = form.elements['time_departure'].value == 'day' ? 25 : 30;
 			outMkadKm  = form['out_MKAD_km'].value * _KM_OUT_MKAD;
