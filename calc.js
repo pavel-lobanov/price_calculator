@@ -242,7 +242,6 @@
 				wheelsCount = parseInt(additionalCar[3].children[0].value);
 				if (additionalCar[5].children[0].checked && changeType == 'fullPrice') carPriceRatio += .2;
 				oneCarCost += (wheelPrice * wheelsCount) * carPriceRatio;
-				console.log(oneCarCost)
 				if (changeType == 'fullPrice') tireFullChange += 1;
 			}
 			switch (form.elements['time_departure'].value) {
