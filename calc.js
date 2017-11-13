@@ -242,6 +242,14 @@
 				wheelsCount = parseInt(additionalCar[3].children[0].value);
 				if (additionalCar[5].children[0].checked && changeType == 'fullPrice') carPriceRatio += .2;
 				oneCarCost += (wheelPrice * wheelsCount) * carPriceRatio;
+				
+				//add minimal costs for 'onWheel' tire change
+				if(oneCarCost < 30 && carPriceRatio === 1) {
+					oneCarCost = 30;
+				}else if (oneCarCost < 35 && carPriceRatio === 1.2){
+					oneCarCost = 35;
+				}
+
 				if (changeType == 'fullPrice') tireFullChange += 1;
 			}
 			switch (form.elements['time_departure'].value) {
