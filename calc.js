@@ -241,13 +241,13 @@
 				wheelPrice = _ONE_WHEEL_SET_PRICE[additionalCar[2].children[0].value][changeType];
 				wheelsCount = parseInt(additionalCar[3].children[0].value);
 				if (additionalCar[5].children[0].checked && changeType == 'fullPrice') carPriceRatio += .2;
-				oneCarCost += (wheelPrice * wheelsCount) * carPriceRatio;
-				
-				//add minimal costs for 'onWheel' tire change
-				if(oneCarCost < 30 && carPriceRatio === 1) {
-					oneCarCost = 30;
-				}else if (oneCarCost < 35 && carPriceRatio === 1.2){
-					oneCarCost = 35;
+ 				//add minimal costs for 'onWheel' tire change
+				if(changeType === 'onWheel' && carPriceRatio === 1) {
+					oneCarCost = 7.5 * wheelsCount;
+				}else if (changeType === 'onWheel' && carPriceRatio === 1.2){
+					oneCarCost = 8.75 * wheelsCount;
+				}else {
+					oneCarCost += (wheelPrice * wheelsCount) * carPriceRatio;
 				}
 
 				if (changeType == 'fullPrice') tireFullChange += 1;
